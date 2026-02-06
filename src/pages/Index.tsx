@@ -48,8 +48,11 @@ const LandingPage = () => {
           <p className="mt-5 text-lg text-primary-foreground/70 max-w-xl mx-auto">
             A centralized platform managing the entire Final Year Project lifecycle — from proposal to viva evaluation.
           </p>
-          <a href="#login" className="inline-flex items-center gap-2 mt-8 px-6 py-3 rounded-lg gradient-primary text-primary-foreground font-semibold shadow-elevated hover:opacity-90 transition-opacity">
+          <a href="#login" className="inline-flex items-center gap-2 mt-8 px-6 py-3 rounded-lg gradient-primary text-primary-foreground font-semibold shadow-elevated hover:opacity-90 transition-opacity mr-3">
             Get Started <ArrowRight className="w-4 h-4" />
+          </a>
+          <a href="/login" className="inline-flex items-center gap-2 mt-8 px-6 py-3 rounded-lg border border-primary-foreground/30 text-primary-foreground font-semibold hover:bg-primary-foreground/10 transition-colors">
+            Sign In
           </a>
         </div>
       </header>

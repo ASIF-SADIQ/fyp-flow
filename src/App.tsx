@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/DashboardLayout";
 import Index from "./pages/Index";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Proposals from "./pages/Proposals";
 import Milestones from "./pages/Milestones";
@@ -30,6 +32,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={role ? <Navigate to="/dashboard" replace /> : <Index />} />
+      <Route path="/login" element={role ? <Navigate to="/dashboard" replace /> : <Login />} />
+      <Route path="/register" element={role ? <Navigate to="/dashboard" replace /> : <Register />} />
       <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/proposals" element={<Proposals />} />
