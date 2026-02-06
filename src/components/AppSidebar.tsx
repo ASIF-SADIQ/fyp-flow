@@ -3,8 +3,10 @@ import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, FileText, BarChart3, MessageSquare,
   Calendar, Bell, Settings, LogOut, Users, GraduationCap,
-  ClipboardCheck, FolderOpen
+  ClipboardCheck, FolderOpen, Menu, X
 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const studentLinks = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -35,6 +37,13 @@ const adminLinks = [
 export const AppSidebar = () => {
   const { role, userName, logout } = useAuth();
   const location = useLocation();
+  const isMobile = useIsMobile();
+  const [open, setOpen] = useState(false);
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    if (isMobile) setOpen(false);
+  }, [location.pathname, isMobile]);
 
   const links = role === "admin" ? adminLinks : role === "supervisor" ? supervisorLinks : studentLinks;
 
@@ -44,17 +53,39 @@ export const AppSidebar = () => {
     admin: "Administrator",
   };
 
-  return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-sidebar text-sidebar-foreground flex flex-col">
-      {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-sidebar-border">
-        <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center">
-          <GraduationCap className="w-5 h-5 text-primary-foreground" />
+  // Hamburger button (mobile only)
+  const trigger = isMobile ? (
+    <button
+      onClick={() => setOpen(true)}
+      className="fixed top-4 left-4 z-50 p-2 rounded-lg bg-card border border-border shadow-card text-foreground"
+      aria-label="Open menu"
+    >
+      <Menu className="w-5 h-5" />
+    </button>
+  ) : null;
+
+  const sidebarContent = (
+    <aside
+      className={`fixed left-0 top-0 z-50 h-screen bg-sidebar text-sidebar-foreground flex flex-col transition-transform duration-200 ${
+        isMobile ? "w-72 shadow-elevated" : "w-64"
+      } ${isMobile && !open ? "-translate-x-full" : "translate-x-0"}`}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-5 border-b border-sidebar-border">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center">
+            <GraduationCap className="w-5 h-5 text-primary-foreground" />
+          </div>
+          <div>
+            <h1 className="text-sm font-bold tracking-tight">FYP Portal</h1>
+            <p className="text-xs text-sidebar-foreground/60">Management System</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-sm font-bold tracking-tight">FYP Portal</h1>
-          <p className="text-xs text-sidebar-foreground/60">Management System</p>
-        </div>
+        {isMobile && (
+          <button onClick={() => setOpen(false)} aria-label="Close menu" className="p-1 rounded hover:bg-sidebar-accent">
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* User info */}
@@ -85,7 +116,7 @@ export const AppSidebar = () => {
         ))}
       </nav>
 
-      {/* Notifications + Logout */}
+      {/* Bottom */}
       <div className="px-3 pb-4 space-y-1 border-t border-sidebar-border pt-4">
         <NavLink
           to="/notifications"
@@ -104,5 +135,16 @@ export const AppSidebar = () => {
         </button>
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {trigger}
+      {/* Overlay for mobile */}
+      {isMobile && open && (
+        <div className="fixed inset-0 z-40 bg-foreground/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
+      )}
+      {sidebarContent}
+    </>
   );
 };
